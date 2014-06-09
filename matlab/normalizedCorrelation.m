@@ -10,6 +10,11 @@ function [c1,c2,c3] = normalizedCorrelation(s1, s2, Fs, SmoothMethod, Wn, K)
 %   s1 = first trace (i.e., the virtual source)
 %   s2 = second trace
 %   Fs = sample frequency (Hz)
+%   smoothMethod = 'taper' or 'median'
+%   Wn = for 'taper' method, Wn=first 2*Wn discrete prolate spheroidal
+%   sequences; for 'median' method, Wn=Wn order in medfilt1.m
+%   K = the K most band-limited discrete prolate spheroidal sequences
+%   when using the 'taper' mehtod. Default is K=2*Wn-1
 %
 % 1) array normalization (Transfer function) using estimated spectra based on array observation
 % 2) station normalization (Transfer function) spectrum must be smoothed
@@ -34,9 +39,18 @@ function [c1,c2,c3] = normalizedCorrelation(s1, s2, Fs, SmoothMethod, Wn, K)
 % Modified by Dylan Mikesell (mikesell@mit.edu)
 % Last modified 2 June 2014
 
+if nargin < 6
+   K = 2 * Wn - 1;
+end
+
 % general formulation
 
 npts = numel(s1);
+taper = tukeywin(npts,0.1); % taper 5% on each side of trace 
+s1 = s1.*taper; 
+s1 = transpose(s1);
+s2 = s2.*taper;
+s2 = transpose(s2);
 
 nfft = 2*npts - 1; % get the final correlation length
 

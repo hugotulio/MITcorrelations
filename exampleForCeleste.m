@@ -23,7 +23,7 @@ load('/Users/dmikessell/workspace/IRIS/JulianDayData/julDay_1152.mat');
 
 %% setup the correlation output structure
 
-outputDirectory = './output_test';
+outputDirectory = './4hour_test';
 
 % make directory for output of the correlations
 [success,message,messageID] = checkOutputDir(outputDirectory);
@@ -49,30 +49,8 @@ W_filt = filtfilt(Filt,W); % apply the filter to the data
 
 % plot to see what filter has done to data
 C = correlation(W_filt);
-figure;
 plot(C);
 
-%% remove spikes in data
-
-% This routine divides the time series up in to window and checks for
-% spike using an energy test. If the maximum energy in the time
-% exceeds a ratio computed by std. deviation of the energy in the
-% window, the window, and the precedding window, are set to zero.
-
-windowMin = 60*4; % window lenght (min)
-Nstd = 20; % threshold for determining whether or not a spike.
-
-W_rsp = RemoveSpikesWaveform2(W,windowMin,Nstd);
-
-% another option is to use the Earthquake catalogue or the despike.m
-% routine used in Acoustic Doppler Velocimetry that I found buried in
-% the gismotools package. I am sure that there are many clever
-% algorithms out there for despiking data.
-
-% plot to see what has happened because of removespikes
-C = correlation(W_rsp);
-figure;
-plot(C);
 
 %% Preprocess data
 
@@ -90,17 +68,12 @@ W_whiten = WhitenWaveform(W,FB);
 % Next we do a double loop over all possible stations implemented in
 % parallel.
 
-smoothMethod = 'taper'; % can be 'taper' or 'median'
-Wn = 3;
-K = 2*Wn-1;
-windowMin = 60*4; % window length (min)
+smoothMethod   = 'taper'; % can be 'taper' or 'median'
+Wn             = 3;
+K              = 2*Wn-1;
+windowMin      = 60*4; % window length (min)
 overlapPercent = 50;
 
 C = runDayCorrelations(W,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
-
-
-%% Postprocess the correlations
-
-% Here we stack the data using different  methods
 
 
