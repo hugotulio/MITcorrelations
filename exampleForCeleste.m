@@ -72,7 +72,7 @@ smoothMethod   = 'taper'; % can be 'taper' or 'median'
 Wn             = 3;
 K              = 2*Wn-1;
 windowMin      = 60*4; % window length (min)
-overlapPercent = 50;
+overlapPercent = 50; % percentage of windows to overlap
 
 C = runDayCorrelations(W,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
 
