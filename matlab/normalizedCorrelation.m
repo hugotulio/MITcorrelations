@@ -2,36 +2,31 @@ function [c1,c2,c3] = normalizedCorrelation(s1, s2, Fs, SmoothMethod, Wn, K)
 %
 % This function computes crosscorrelation of s1 and s2. The returned
 % data each have a different normalization applied. The computations
-% use 3 different approaches. See Bendat & Piersol 2000
+% use 3 different approaches. See Bendat & Piersol 2000.
 %
 % USAGE: [c1,c2,c3] = normalizedCorrelation(s1, s2, Fs, SmoothMethod, Wn, K)
 %
 % INPUT:
-%   s1 = first trace (i.e., the virtual source)
-%   s2 = second trace
-%   Fs = sample frequency (Hz)
+%   s1           = first trace (i.e., the virtual source)
+%   s2           = second trace
+%   Fs           = sample frequency (Hz)
 %   smoothMethod = 'taper' or 'median'
-%   Wn = for 'taper' method, Wn=first 2*Wn discrete prolate spheroidal
-%   sequences; for 'median' method, Wn=Wn order in medfilt1.m
-%   K = the K most band-limited discrete prolate spheroidal sequences
-%   when using the 'taper' mehtod. Default is K=2*Wn-1
+%   Wn           = for 'taper' method, Wn=first 2*Wn discrete prolate
+%   spheroidal sequences; for 'median' method, Wn=Wn order in
+%   medfilt1.m 
+%   K            = the K most band-limited discrete prolate spheroidal
+%   sequences when using the 'taper' mehtod. Default is K=2*Wn-1
+% OUTPUT:
+%   c1 = Autocorr energy normalized correlation: C12(t)/(C11(0)C22(0))
+%   c2 = simple normalization (Coherence) C12(w)/({abs(S1(w))}{abs(S2(w))})
+%   c3 = Transfer function station normalization C12(w)/({abs(S1(w))^2})
 %
-% 1) array normalization (Transfer function) using estimated spectra based on array observation
-% 2) station normalization (Transfer function) spectrum must be smoothed
+% 1) array normalization (Transfer function) using estimated spectra
+%    based on array observation 
+% 2) station normalization (Transfer function) spectrum must be
+%    smoothed 
 % 3) simple normalization (Coherence)
 % 4) Autocorr energy normalization
-%
-% INPUT PARAMETERS:
-%
-% s1 and s2 : traces to be treated
-% Wn: time bandwidth product
-%
-% OUTPUT:
-%
-% c1: Autocorr energy normalized correlation: C12(t)/(C11(0)C22(0))
-% c2: simple normalization (Coherence) C12(w)/({abs(S1(w))}{abs(S2(w))})
-% c3: Transfer function station normalization C12(w)/({abs(S1(w))^2})
-% c4: Transfer function array normalization C12(w)/({abs(Sarray(w))^2})
 %
 %
 % CREATED BY Piero Poli Massachussets Institute of Technology
@@ -45,12 +40,20 @@ end
 
 % general formulation
 
-npts = numel(s1);
+npts  = numel(s1);
 taper = tukeywin(npts,0.1); % taper 5% on each side of trace 
-s1 = s1.*taper; 
-s1 = transpose(s1);
-s2 = s2.*taper;
-s2 = transpose(s2);
+
+% % check the dimensions of the input traces
+% isflip1 = 0;
+% isflip2 = 0;
+% 
+% if size(s1,1) == 1 % (1xN)
+%     transpose(s1);
+
+s1    = s1.*taper; 
+s1    = transpose(s1);
+s2    = s2.*taper;
+s2    = transpose(s2);
 
 nfft = 2*npts - 1; % get the final correlation length
 
@@ -68,8 +71,8 @@ SpectralDomainCorr = s1FFT.*conj(s2FFT); % correlation in frequency domain
 sigma1 = fftshift( ifft( s1FFT.*conj(s1FFT) ) ); % autocorr s1
 sigma2 = fftshift( ifft( s2FFT.*conj(s2FFT) ) ); % autocorr s2
 
-norm1=sigma1( (length(sigma1) + 1) / 2 ).*ones(1, nfft); % get t=0 enrgy for autocorr s1
-norm2=sigma1( (length(sigma2) + 1) / 2 ).*ones(1, nfft); % get t=0 enrgy for autocorr s2
+norm1 = sigma1( (length(sigma1) + 1) / 2 ).*ones(1, nfft); % get t=0 enrgy for autocorr s1
+norm2 = sigma1( (length(sigma2) + 1) / 2 ).*ones(1, nfft); % get t=0 enrgy for autocorr s2
 
 c1 = fftshift( ifft(SpectralDomainCorr) )./( sqrt(norm1).*sqrt(norm2) ); % normalize
 

@@ -5,7 +5,7 @@ clc
 % add these folders to your MATLAB path so MATLAB knows to look for
 % the codes here.
 addpath('/Users/dmikessell/GIT/MITcorrelations/matlab');
-addpath('/Users/dmikessell/GIT/MITcorrelations/matlab/external');
+% addpath('/Users/dmikessell/GIT/MITcorrelations/matlab/external');
 
 % load a test matrix
 load('/Users/dmikessell/workspace/IRIS/JulianDayData/julDay_1152.mat');
@@ -58,8 +58,11 @@ plot(C);
 % or not we will 'whiten' the data. If we whiten, we need to choose
 % the method for whitening.
 
-FB = [0.1, 1];
+FB       = [0.1, 1];
 W_whiten = WhitenWaveform(W,FB);
+
+C = correlation(W_whiten);
+plot(C);
 
 %% Crosscorrelate all combinations for data, output saved to outputDirectory
 
@@ -72,8 +75,9 @@ smoothMethod   = 'taper'; % can be 'taper' or 'median'
 Wn             = 3;
 K              = 2*Wn-1;
 windowMin      = 60*4; % window length (min)
-overlapPercent = 50; % percentage of windows to overlap
+overlapPercent = 0.5; % percentage of windows to overlap
 
-C = runDayCorrelations(W,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
-
+tic
+runDayCorrelations(W,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
+toc
 
