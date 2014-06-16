@@ -19,9 +19,11 @@ nW   = numel(W);
 Wout = W; % allocate for speed
 
 for ii = 1:nW
-    trace    = whitenTrace( double(W(ii)), F, 1/get(W(ii),'FREQ') );
+    trace    = whitenTraceWithNoZeros( double(W(ii)), F, 1/get(W(ii),'FREQ') );
     Wout(ii) = addhistory( Wout(ii), 'Whitened data over band [%0.2f, %0.2f] (Hz)', F(1), F(2) ); % add a history comment
     Wout(ii) = set( Wout(ii), 'DATA', trace); % replace old data with new
+    Wout(ii) = addfield( Wout(ii), 'isWhite', true); % indicate that whitening has occurred
+    Wout(ii) = addfield( Wout(ii), 'WhiteBand', F); % add whitening band parameters
 end
 
 return

@@ -28,7 +28,8 @@ else
 end
 
 if directoryCreate
-    [success,message,messageID] = mkdir(outputDirectory);
+    [success, message]          = rmdir(outputDirectory,'s'); % recursively remove old directory
+    [success,message,messageID] = mkdir(outputDirectory); % make new directory
 else
     success   = 0;
     message   = 0;

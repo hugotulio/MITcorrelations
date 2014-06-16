@@ -11,7 +11,7 @@ function Awhite = whitenTrace(A, F, dt)
 % OUTPUT:
 %   Awhite = the whitened trace (npts,1)
 %
-% Written by Piero Poli
+% Written by Piero Poli (Original was blanchmat.m)
 % Modified by Dylan Mikesell (mikesell@mit.edu)
 % Last modified 2 June 2014
 
@@ -22,6 +22,9 @@ if npts == 1
     isflip = 1;
     A = transpose(A);
 end
+
+%---------------------------------------------------------------------
+% Original blanchmat.m function
 
 df = 1/(npts*dt); % sample interval in frequency domain
 
@@ -62,3 +65,5 @@ Awhite = real( ifft( TF./abs(TF).*Awhite ) ); % inverse FFT to time domain
 if isflip
     Awhite = transpose(Awhite);
 end
+
+return

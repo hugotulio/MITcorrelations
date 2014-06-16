@@ -78,6 +78,6 @@ windowMin      = 60*4; % window length (min)
 overlapPercent = 0.5; % percentage of windows to overlap
 
 tic
-runDayCorrelations(W,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
+runDayCorrelations(W_whiten,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
 toc
 
