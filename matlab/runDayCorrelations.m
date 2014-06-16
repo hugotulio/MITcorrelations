@@ -52,10 +52,11 @@ for tt = 1 : nWindows
     Cout = repmat(Cout,nC,1); % allocate complete waveform object
     
     % double loop to cover all pairs of correlations
-    for ii = 1 %: nW
+    for ii = 1 : nW
         
         WA = double(W(ii));
-        isWhitend = isfield(W(ii),'isWhite'); % check to see if data have been spectrally whitened already
+%         isWhitend = isfield(W(ii),'isWhite'); % check to see if data have been spectrally whitened already
+        isWhitend = 0; % assume no whitening so that C2 and C3 are not computed
         
         % check that trace has less than 75% zero before doing
         % correlation

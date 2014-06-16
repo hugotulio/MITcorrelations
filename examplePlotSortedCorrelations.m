@@ -8,16 +8,17 @@ inputDirectory = './4hour_test_sorted';
 
 files = dir([inputDirectory '/*.mat']);
 
-idx = 6;
+idx = 1;
 files(idx).name
 
 load([inputDirectory '/' files(idx).name]);
 
 %%
 
-data = cell2mat(get(statC,'c1'));
-data = reshape(data,[numel(get(statC(1),'c1')),numel(statC)]);
+data = cell2mat(get(statC,'c1')); % get c1 data
+data = reshape(data,[numel(get(statC(1),'c1')),numel(statC)]); % make c1 vector into matrix
 
-% plot(sum(data,2))
+plot(sum(data,2))
 
-imagesc(data)
+% imagesc(data)
+% wigb(data)
