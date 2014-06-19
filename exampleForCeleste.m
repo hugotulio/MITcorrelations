@@ -7,6 +7,27 @@ clc
 addpath('/Users/dmikessell/GIT/MITcorrelations/matlab');
 % addpath('/Users/dmikessell/GIT/MITcorrelations/matlab/external');
 
+%% setup the correlation output structure
+
+outputDirectory = './4hour_test_single';
+
+% make directory for output of the correlations
+[success,message,messageID] = checkOutputDir(outputDirectory);
+ 
+% filter parameters
+fmin = 0.1; % low-cutt of filter (Hz)
+fmax = 1.0; % high-cut of filter (Hz)
+btord = 3; % number of poles in Butterworth filter
+
+% correlation parameters
+smoothMethod   = 'taper'; % can be 'taper' or 'median'
+Wn             = 3;
+K              = 2*Wn-1;
+windowMin      = 60*4; % window length (min)
+overlapPercent = 0.5; % percentage of windows to overlap
+
+%% paralle loop through the data files
+
 % load a test matrix
 load('/Users/dmikessell/workspace/IRIS/JulianDayData/julDay_1152.mat');
 % These data come into MATLAB as WAVEFORM objects. This way they
@@ -20,18 +41,11 @@ load('/Users/dmikessell/workspace/IRIS/JulianDayData/julDay_1152.mat');
 % useful plotting and processing tools for passive seismic data.
 
 
-
-%% setup the correlation output structure
-
-outputDirectory = './4hour_test';
-
-% make directory for output of the correlations
-[success,message,messageID] = checkOutputDir(outputDirectory);
-        
+       
 %% plot to see raw data
 
-C = correlation(W);
-plot(C);
+% C = correlation(W);
+% plot(C);
 
 %% remove any blank traces
 
@@ -40,17 +54,14 @@ W(blankIdx) = []; % remove blank traces
 
 %% frequency filter data
 
-fmin = 0.1; % low-cutt of filter (Hz)
-fmax = 1.0; % high-cut of filter (Hz)
-btord = 3; % number of poles in Butterworth filter
 
 Filt   = filterobject('B',[fmin,fmax],btord); % create a frequency filter for waveform
 W_filt = filtfilt(Filt,W); % apply the filter to the data 
 
-% plot to see what filter has done to data
-C = correlation(W_filt);
-plot(C);
-
+% % plot to see what filter has done to data
+% C = correlation(W_filt);
+% plot(C);
+% 
 
 %% Preprocess data
 
@@ -58,11 +69,11 @@ plot(C);
 % or not we will 'whiten' the data. If we whiten, we need to choose
 % the method for whitening.
 
-FB       = [0.1, 1];
+FB       = [fmin, fmax];
 W_whiten = WhitenWaveform(W,FB);
 
-C = correlation(W_whiten);
-plot(C);
+% C = correlation(W_whiten);
+% plot(C);
 
 %% Crosscorrelate all combinations for data, output saved to outputDirectory
 
@@ -71,13 +82,8 @@ plot(C);
 % Next we do a double loop over all possible stations implemented in
 % parallel.
 
-smoothMethod   = 'taper'; % can be 'taper' or 'median'
-Wn             = 3;
-K              = 2*Wn-1;
-windowMin      = 60*4; % window length (min)
-overlapPercent = 0.5; % percentage of windows to overlap
 
 tic
-runDayCorrelations(W_whiten,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
+runDayCorrelations2(W_whiten,windowMin,overlapPercent,smoothMethod,Wn,K,outputDirectory);
 toc
 
