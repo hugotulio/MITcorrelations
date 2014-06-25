@@ -48,10 +48,10 @@ for tt = 1 : nWindows
     winSampIdx = windowStart(tt) : windowStart(tt) + nSampWin - 1; % smaple indices for this window
     
     % double loop to cover all pairs of correlations
-    for ii = 1% : nW
+    for ii = 1 %: nW
         
         WA = double(W(ii));
-        %         isWhitend = isfield(W(ii),'isWhite'); % check to see if data have been spectrally whitened already
+        % isWhitend = isfield(W(ii),'isWhite'); % check to see if data have been spectrally whitened already
         isWhitend = 0; % assume no whitening so that C2 and C3 are not computed
         
         % check that trace has less than 75% zero before doing
@@ -60,7 +60,7 @@ for tt = 1 : nWindows
         if sum(zeroIdx) < nSampWin*0.75
             
             % loop over stations
-            for jj = ii :10%: nW
+            for jj = ii% : nW
                 
                 WB = double(W(jj));
                 
@@ -108,14 +108,14 @@ for tt = 1 : nWindows
                     statC = addfield(statC, 'K', K);
                     
                     station   = get(statC,'station'); % get station pair
-                    startDate = [datestr(get(statC,'start'),'YYYY_MM_DD') '_window' num2str(tt)];
+                    startDate = [datestr(get(statC,'start'),'yyyy_mm_dd') '_window_' num2str(tt,'%03d')];
                     
                     if exist([outputDirectory '/' station],'dir') == 0
                         mkdir([outputDirectory '/' station]);
                     end              
                     
                     fname = [outputDirectory '/' station '/' startDate '.mat'];
-                    savefast(fname,'statC'); % write NEW matrix file out
+                    save(fname,'statC','-v7.3'); % write NEW matrix file out
         
                 end % end if
             end % jj loop over WB

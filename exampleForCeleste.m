@@ -4,12 +4,12 @@ clc
 
 % add these folders to your MATLAB path so MATLAB knows to look for
 % the codes here.
-addpath('/Users/dmikessell/GIT/MITcorrelations/matlab');
+addpath('/Users/dmikesell/GIT/MITcorrelations/matlab/');
 % addpath('/Users/dmikessell/GIT/MITcorrelations/matlab/external');
 
 %% setup the correlation output structure
 
-outputDirectory = './4hour_test_single';
+outputDirectory = '/Volumes/data/IRIS_data/USArray/correlations';
 
 % make directory for output of the correlations
 [success,message,messageID] = checkOutputDir(outputDirectory);
@@ -25,6 +25,8 @@ Wn             = 3;
 K              = 2*Wn-1;
 windowMin      = 60*4; % window length (min)
 overlapPercent = 0.5; % percentage of windows to overlap
+
+fpntf
 
 %% paralle loop through the data files
 
